@@ -26,7 +26,6 @@ node index.js
 ```
 ### Utilisation
 Le contenu de la page varie en fonction de la route.  
-Routes :  
 - `/` : explication du fonctionnement de l'application
 - `/hello?name={nom}` : affiche "Hello nom"
 - `/hello?name=philippe` : affiche une petite présentation de l'auteur

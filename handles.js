@@ -13,15 +13,15 @@ module.exports = {
 
     if (path === "/") {
       // explains how /hello works
-      variable_content = "By setting '/hello' as path with a 'name' param, 'Hello [name]' will be printed. <br/>" +
-      "Example : <a href='http://localhost:8080/hello?name=YourName'>http://localhost:8080/hello?name=YourName</a> will print 'Hello YourName' <br/><br/>" +
-      "By setting '/hello' as path with 'philippe' or 'Philippe' in the 'name' param, a short introduction of me will be printed. <br/>" +
+      variable_content = "En mettant le path '/hello' avec un paramètre 'name', 'Hello [name]' sera affiché. <br/>" +
+      "Example : <a href='http://localhost:8080/hello?name=YourName'>http://localhost:8080/hello?name=YourName</a> affichera 'Hello YourName' <br/><br/>" +
+      "En mettant le path '/hello', 'philippe' or 'Philippe' en paramètre de 'name', une courte présentation de l'auteur sera affichée. <br/>" +
       "Example : <a href='http://localhost:8080/hello?name=philippe'>http://localhost:8080/hello?name=philippe</a> <br/><br/>" +
-      "By setting in other path, a 404 code with a '404 Page not found' will be sent";
+      "Tout autre path affichera une erreur 404 avec '404 Page not found'";
     } else if (path === "/hello" && (params["name"] === "philippe"||params["name"] === "Philippe")) {
       // short intro of yourself
-      variable_content = "My name is Ong Philippe, I am 22 yo. <br/>" +
-      "I am a engineering student in final year of master degree, specialized in IoT, networks and services";
+      variable_content = "Je suis Ong Philippe, j'ai 22 ans. <br/>" +
+      "Je suis un étudiant ingénieur en dernière année à l'ECE Paris. Ma majeure s'intitule Objets Connectés, Réseaux et Services.";
     } else if (path === "/hello" && "name" in params) {
       variable_content = `Hello ${params["name"]}`;
     } else {
