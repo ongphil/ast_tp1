@@ -1,0 +1,23 @@
+{
+  "name": "ast_tp1",
+  "version": "1.0.0",
+  "description": "Une simple application Hello pour pratiquer les modules et le routing sur NodeJS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ongphil/ast_tp1.git"
+  },
+  "author": "Ong Philippe",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ongphil/ast_tp1/issues"
+  },
+  "homepage": "https://github.com/ongphil/ast_tp1#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.4"
+  }
+}
