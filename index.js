@@ -7,6 +7,7 @@ app.listen(app.get('port'), () => {
   });
 
 app.get("/", (req, res) => {
+    res.status(200);
     // explains how /hello works
     const intro = "En mettant le path '/hello/:name', 'Hello [name]' sera affich&eacute;. <br/>" +
     "Example : <a href='http://localhost:8080/hello/YourName'>http://localhost:8080/hello/YourName</a> affichera 'Hello YourName' <br/><br/>" +
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/hello/:name", (req, res) => {
+  res.status(200);
   if (req.params.name.toLowerCase() === "philippe") {
     const my_presentation = "Je suis Ong Philippe, j'ai 22 ans. <br/>" +
     "Je suis un &eacute;tudiant ing&eacute;nieur en dernière ann&eacute;e à l'ECE Paris. Ma majeure s'intitule Objets Connect&eacute;s, R&eacute;seaux et Services.";
@@ -27,6 +29,7 @@ app.get("/hello/:name", (req, res) => {
 });
 
 app.use(function(req, res) {
+    res.status(404);
     res.send("404 Page not found");
 });
 
