@@ -1,8 +1,8 @@
 # TP1 : application Hello
 
-Une simple application Hello pour pratiquer les modules et le routing sur NodeJS.
-
 [![Build Status](https://travis-ci.org/ongphil/ast_tp1.svg?branch=master)](https://travis-ci.org/ongphil/ast_tp1)
+
+Une simple application Hello pour pratiquer les modules et le routing sur NodeJS.
 
 ## Instructions
 

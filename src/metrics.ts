@@ -1,4 +1,4 @@
- import { LevelDb } from "./leveldb";
+import { LevelDb } from "./leveldb";
 import WriteStream from "level-ws";
 
 export class Metric {
@@ -12,7 +12,7 @@ export class Metric {
 }
 
 export class MetricsHandler {
-  private db: any;
+  public db: any;
 
   constructor(path: string) {
     this.db = LevelDb.open(path);
@@ -52,11 +52,9 @@ export class MetricsHandler {
         const value = data.value;
         if (key != k) {
           console.log(`Level DB error: ${data} does not match key ${key}`);
-        }
-        else {
+        } else {
           this.db.del(data.key);
         }
-        
       });
   }
 
@@ -77,11 +75,9 @@ export class MetricsHandler {
         const value = data.value;
         if (key != k) {
           console.log(`Level DB error: ${data} does not match key ${key}`);
-        }
-        else {
+        } else {
           met.push(new Metric(timestamp, value));
         }
-        
       });
   }
 }

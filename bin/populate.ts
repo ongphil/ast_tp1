@@ -2,7 +2,7 @@
 
 import { MetricsHandler, Metric } from "../src/metrics";
 
-const dbMet = new MetricsHandler("./db");
+const dbMet = new MetricsHandler("./db/metrics");
 
 const met = [
   new Metric(`${new Date("2013-11-04 14:00 UTC").getTime()}`, 12),

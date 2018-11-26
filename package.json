@@ -21,6 +21,7 @@
   "homepage": "https://github.com/ongphil/ast_tp1#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "del": "^3.0.0",
     "ejs": "^2.6.1",
     "encoding-down": "^5.0.4",
     "express": "^4.16.4",
