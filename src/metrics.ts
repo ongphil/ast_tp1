@@ -35,7 +35,7 @@ export class MetricsHandler {
     stream.end();
   }
 
-  public delete(
+  public remove(
     key: string,
     callback: (err: Error | null, result?: Metric[]) => void
   ) {

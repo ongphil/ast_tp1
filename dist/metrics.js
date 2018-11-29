@@ -25,7 +25,7 @@ class MetricsHandler {
         });
         stream.end();
     }
-    delete(key, callback) {
+    remove(key, callback) {
         const stream = this.db.createReadStream();
         var met = [];
         stream
