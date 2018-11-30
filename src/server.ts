@@ -141,38 +141,68 @@ metricsRouter.use(function(req: any, res: any, next: any) {
 
 /// Affiche tous les groupes de metrics d'un user
 metricsRouter.get("/:username", (req: any, res: any, next: any) => {
-  dbMet.getAllUserMetrics(req.params.username, (err: Error | null, result?: Metric[]) => {
-    if (err) next(err);
-    if (result === undefined) {
-      res.write("no result");
-      res.send();
-    } else res.json(result);
-  });
+  if (req.session.user.username === req.params.username) {
+    dbMet.getAllUserMetrics(
+      req.params.username,
+      (err: Error | null, result?: Metric[]) => {
+        if (err) next(err);
+        if (result === undefined) {
+          res.write("no result");
+          res.send();
+        } else res.json(result);
+      }
+    );
+  } else {
+    res
+      .status(401)
+      .send("Vous n'avez pas l'autorisation de lire les metrics d'autrui !");
+  }
 });
 
 /// Affiche un groupe de metrics d'un user
 metricsRouter.get("/:username/:id", (req: any, res: any, next: any) => {
-  dbMet.getUserMetricsWithKey(req.params.username, req.params.id, (err: Error | null, result?: Metric[]) => {
-    if (err) next(err);
-    if (result === undefined) {
-      res.write("no result");
-      res.send();
-    } else res.json(result);
-  });
+  if (req.session.user.username === req.params.username) {
+    dbMet.getUserMetricsWithKey(
+      req.params.username,
+      req.params.id,
+      (err: Error | null, result?: Metric[]) => {
+        if (err) next(err);
+        if (result === undefined) {
+          res.write("no result");
+          res.send();
+        } else res.json(result);
+      }
+    );
+  }
 });
 
+// Sauvegarde un groupe de metrics d'un user
 metricsRouter.post("/:username/:id", (req: any, res: any, next: any) => {
-  dbMet.saveUserMetricsWithKey(req.params.username, req.params.id, req.body, (err: Error | null) => {
-    if (err) next(err);
-    res.status(200).send();
-  });
+  if (req.session.user.username === req.params.username) {
+    dbMet.saveUserMetricsWithKey(
+      req.params.username,
+      req.params.id,
+      req.body,
+      (err: Error | null) => {
+        if (err) next(err);
+        res.status(200).send();
+      }
+    );
+  }
 });
 
+// Supprime un groupe de metrics d'un user
 metricsRouter.delete("/:username/:id", (req: any, res: any, next: any) => {
-  dbMet.removeUserMetricsWithKey(req.params.username, req.params.id, (err: Error | null) => {
-    if (err) next(err);
-    res.status(200).send();
-  });
+  if (req.session.user.username === req.params.username) {
+    dbMet.removeUserMetricsWithKey(
+      req.params.username,
+      req.params.id,
+      (err: Error | null) => {
+        if (err) next(err);
+        res.status(200).send();
+      }
+    );
+  }
 });
 
 app.use("/metrics", authMiddleware, metricsRouter);
