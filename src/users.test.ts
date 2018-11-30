@@ -17,7 +17,11 @@ describe("Users", function() {
 
   describe("#get", function() {
     it("should get undefined on non existing User", function() {
-      // TODO
+      dbUser.get("use", (err: Error | null, result?: User) => {
+        expect(err).to.be.null;
+        expect(result).to.not.be.undefined;
+        console.log(result);
+      });
     });
   });
 
