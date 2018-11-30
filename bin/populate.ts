@@ -12,9 +12,19 @@ const met = [
   new Metric(`${new Date("2013-11-04 14:30 UTC").getTime()}`, 8)
 ];
 
+const met2 = [
+  new Metric(`${new Date("2013-11-04 15:00 UTC").getTime()}`, 22),
+  new Metric(`${new Date("2013-11-04 15:15 UTC").getTime()}`, 20),
+  new Metric(`${new Date("2013-11-04 15:30 UTC").getTime()}`, 18)
+];
+
 const user = new User("user", "user@test.com", "user");
 
-dbMet.save("0", met, (err: Error | null) => {
+dbMet.saveUserMetricsWithKey("user", "0", met, (err: Error | null) => {
+  if (err) throw err;
+  console.log("Data metrics populated");
+});
+dbMet.saveUserMetricsWithKey("user", "1", met2, (err: Error | null) => {
   if (err) throw err;
   console.log("Data metrics populated");
 });

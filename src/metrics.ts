@@ -18,7 +18,11 @@ export class MetricsHandler {
     this.db = LevelDb.open(path);
   }
 
-  public save(
+  /*
+    Sauvegarde un groupe de metrics
+  */
+  public saveUserMetricsWithKey(
+    username: string,
     key: string,
     met: Metric[],
     callback: (error: Error | null) => void
@@ -29,13 +33,17 @@ export class MetricsHandler {
     stream.on("close", callback);
 
     met.forEach(m => {
-      stream.write({ key: `metric:${key}:${m.timestamp}`, value: m.value });
+      stream.write({ key: `metric:${username}:${key}:${m.timestamp}`, value: m.value });
     });
 
     stream.end();
   }
 
-  public remove(
+  /*
+    Supprime un groupe de metrics d'un user
+  */
+  public removeUserMetricsWithKey(
+    username: string,
     key: string,
     callback: (err: Error | null, result?: Metric[]) => void
   ) {
@@ -48,9 +56,9 @@ export class MetricsHandler {
         callback(null, met);
       })
       .on("data", (data: any) => {
-        const [, k, timestamp] = data.key.split(":");
+        const [, u, k,timestamp] = data.key.split(":");
         const value = data.value;
-        if (key != k) {
+        if (key != k || username != u) {
           console.log(`Level DB error: ${data} does not match key ${key}`);
         } else {
           this.db.del(data.key);
@@ -58,7 +66,11 @@ export class MetricsHandler {
       });
   }
 
-  public get(
+  /*
+    Affiche UN groupe de metrics d'un user
+  */
+  public getUserMetricsWithKey(
+    username: string,
     key: string,
     callback: (err: Error | null, result?: Metric[]) => void
   ) {
@@ -71,10 +83,36 @@ export class MetricsHandler {
         callback(null, met);
       })
       .on("data", (data: any) => {
-        const [, k, timestamp] = data.key.split(":");
+        const [, u, k, timestamp] = data.key.split(":");
         const value = data.value;
-        if (key != k) {
+        if (key != k || username != u) {
           console.log(`Level DB error: ${data} does not match key ${key}`);
+        } else {
+          met.push(new Metric(timestamp, value));
+        }
+      });
+  }
+
+  /*
+    Affichage tous les groupes de metrics d'un user
+  */
+  public getAllUserMetrics(
+    username: string,
+    callback: (err: Error | null, result?: Metric[]) => void
+  ) {
+    const stream = this.db.createReadStream();
+    var met: Metric[] = [];
+
+    stream
+      .on("error", callback)
+      .on("end", (err: Error) => {
+        callback(null, met);
+      })
+      .on("data", (data: any) => {
+        const [, u, k, timestamp] = data.key.split(":");
+        const value = data.value;
+        if (username != u) {
+          console.log(`Level DB error: No metric found for this user`);
         } else {
           met.push(new Metric(timestamp, value));
         }

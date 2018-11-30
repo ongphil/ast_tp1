@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const chai_1 = require("chai");
 const users_1 = require("./users");
 const leveldb_1 = require("./leveldb");
 const dbPath = "db_test/users";
@@ -14,7 +15,11 @@ describe("Users", function () {
     });
     describe("#get", function () {
         it("should get undefined on non existing User", function () {
-            // TODO
+            dbUser.get("use", (err, result) => {
+                chai_1.expect(err).to.be.null;
+                chai_1.expect(result).to.not.be.undefined;
+                console.log(result);
+            });
         });
     });
     describe("#save", function () {

@@ -139,8 +139,9 @@ metricsRouter.use(function(req: any, res: any, next: any) {
   next();
 });
 
-metricsRouter.get("/:id", (req: any, res: any, next: any) => {
-  dbMet.get(req.params.id, (err: Error | null, result?: Metric[]) => {
+/// Affiche tous les groupes de metrics d'un user
+metricsRouter.get("/:username", (req: any, res: any, next: any) => {
+  dbMet.getAllUserMetrics(req.params.username, (err: Error | null, result?: Metric[]) => {
     if (err) next(err);
     if (result === undefined) {
       res.write("no result");
@@ -149,15 +150,26 @@ metricsRouter.get("/:id", (req: any, res: any, next: any) => {
   });
 });
 
-metricsRouter.post("/:id", (req: any, res: any, next: any) => {
-  dbMet.save(req.params.id, req.body, (err: Error | null) => {
+/// Affiche un groupe de metrics d'un user
+metricsRouter.get("/:username/:id", (req: any, res: any, next: any) => {
+  dbMet.getUserMetricsWithKey(req.params.username, req.params.id, (err: Error | null, result?: Metric[]) => {
+    if (err) next(err);
+    if (result === undefined) {
+      res.write("no result");
+      res.send();
+    } else res.json(result);
+  });
+});
+
+metricsRouter.post("/:username/:id", (req: any, res: any, next: any) => {
+  dbMet.saveUserMetricsWithKey(req.params.username, req.params.id, req.body, (err: Error | null) => {
     if (err) next(err);
     res.status(200).send();
   });
 });
 
-metricsRouter.delete("/:id", (req: any, res: any, next: any) => {
-  dbMet.remove(req.params.id, (err: Error | null) => {
+metricsRouter.delete("/:username/:id", (req: any, res: any, next: any) => {
+  dbMet.removeUserMetricsWithKey(req.params.username, req.params.id, (err: Error | null) => {
     if (err) next(err);
     res.status(200).send();
   });

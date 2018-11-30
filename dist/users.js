@@ -48,7 +48,9 @@ class UserHandler {
         });
     }
     delete(username, callback) {
-        // TODO
+        this.db.del(`user:${username}`, (err) => {
+            callback(err);
+        });
     }
 }
 exports.UserHandler = UserHandler;

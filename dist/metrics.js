@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const leveldb_1 = require("./leveldb");
 const level_ws_1 = __importDefault(require("level-ws"));
 class Metric {
-    constructor(ts, v) {
+    constructor(u, ts, v) {
+        this.username = u;
         this.timestamp = ts;
         this.value = v;
     }
@@ -21,7 +22,7 @@ class MetricsHandler {
         stream.on("error", callback);
         stream.on("close", callback);
         met.forEach(m => {
-            stream.write({ key: `metric:${key}:${m.timestamp}`, value: m.value });
+            stream.write({ key: `metric:${key}:${m.username}:${m.timestamp}`, value: m.value });
         });
         stream.end();
     }
@@ -34,7 +35,7 @@ class MetricsHandler {
             callback(null, met);
         })
             .on("data", (data) => {
-            const [, k, timestamp] = data.key.split(":");
+            const [, k, u, timestamp] = data.key.split(":");
             const value = data.value;
             if (key != k) {
                 console.log(`Level DB error: ${data} does not match key ${key}`);
@@ -53,13 +54,51 @@ class MetricsHandler {
             callback(null, met);
         })
             .on("data", (data) => {
-            const [, k, timestamp] = data.key.split(":");
+            const [, k, u, timestamp] = data.key.split(":");
             const value = data.value;
             if (key != k) {
                 console.log(`Level DB error: ${data} does not match key ${key}`);
             }
             else {
-                met.push(new Metric(timestamp, value));
+                met.push(new Metric(u, timestamp, value));
+            }
+        });
+    }
+    getUserMetricsWithKey(key, username, callback) {
+        const stream = this.db.createReadStream();
+        var met = [];
+        stream
+            .on("error", callback)
+            .on("end", (err) => {
+            callback(null, met);
+        })
+            .on("data", (data) => {
+            const [, k, u, timestamp] = data.key.split(":");
+            const value = data.value;
+            if (key != k && username != u) {
+                console.log(`Level DB error: ${data} does not match key ${key}`);
+            }
+            else {
+                met.push(new Metric(u, timestamp, value));
+            }
+        });
+    }
+    getAllUserMetrics(username, callback) {
+        const stream = this.db.createReadStream();
+        var met = [];
+        stream
+            .on("error", callback)
+            .on("end", (err) => {
+            callback(null, met);
+        })
+            .on("data", (data) => {
+            const [, k, u, timestamp] = data.key.split(":");
+            const value = data.value;
+            if (username != u) {
+                console.log(`Level DB error: No metric found for this user`);
+            }
+            else {
+                met.push(new Metric(u, timestamp, value));
             }
         });
     }
