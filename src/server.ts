@@ -47,10 +47,12 @@ app.use(
 
 const authRouter = express.Router();
 
+/// Affiche la page login
 authRouter.get("/login", function(req: any, res: any) {
   res.render("login");
 });
 
+/// Procède à la connexion d'un utilisateur
 authRouter.post("/login", function(req: any, res: any, next: any) {
   dbUser.get(req.body.username, function(err: Error | null, result?: User) {
     if (err) next(err);
@@ -64,16 +66,17 @@ authRouter.post("/login", function(req: any, res: any, next: any) {
   });
 });
 
+/// Affiche la page d'inscription
 authRouter.get("/signup", function(req: any, res: any) {
   res.render("signup");
 });
 
+/// Déconnecte l'utilisateur courant et redirige vers la page de login
 authRouter.get("/logout", function(req: any, res: any) {
   if (req.session.loggedIn) {
     delete req.session.loggedIn;
     delete req.session.user;
   }
-
   res.redirect("/login");
 });
 
@@ -99,6 +102,7 @@ app.get("/", authMiddleware, (req: any, res: any) => {
 
 const userRouter = express.Router();
 
+/// Affiche un utilisateur
 userRouter.get("/:username", function(req: any, res: any, next: any) {
   dbUser.get(req.params.username, function(err: Error | null, result?: User) {
     if (err || result === undefined) {
@@ -107,6 +111,7 @@ userRouter.get("/:username", function(req: any, res: any, next: any) {
   });
 });
 
+/// Sauvegarde un utilisateur
 userRouter.post("/", function(req: any, res: any, next: any) {
   dbUser.get(req.body.username, function(err: Error | null, result?: User) {
     if (!err || result !== undefined) {
@@ -120,6 +125,7 @@ userRouter.post("/", function(req: any, res: any, next: any) {
   });
 });
 
+/// Supprime un utilisateur
 userRouter.delete("/:username", function(req: any, res: any, next: any) {
   dbUser.get(req.params.username, function(err: Error | null) {
     if (err) next(err);
