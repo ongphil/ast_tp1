@@ -93,7 +93,7 @@ const authMiddleware = function(req: any, res: any, next: any) {
 */
 
 app.get("/", authMiddleware, (req: any, res: any) => {
-  res.render("index", { name: req.session.username });
+  res.render("index", { name: req.session.user.username });
 });
 
 /*
@@ -150,7 +150,7 @@ metricsRouter.get("/:username", (req: any, res: any, next: any) => {
   if (req.session.user.username === req.params.username) {
     dbMet.getAllUserMetrics(
       req.params.username,
-      (err: Error | null, result?: Metric[]) => {
+      (err: Error | null, result?: {}) => {
         if (err) next(err);
         if (result === undefined) {
           res.write("no result");

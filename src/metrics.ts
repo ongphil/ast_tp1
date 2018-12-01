@@ -98,10 +98,13 @@ export class MetricsHandler {
   */
   public getAllUserMetrics(
     username: string,
-    callback: (err: Error | null, result?: Metric[]) => void
+    callback: (err: Error | null, result?: {}) => void
   ) {
     const stream = this.db.createReadStream();
-    var met: Metric[] = [];
+    let allKeys = new Array();
+    let met = new Array();
+    let metObject = {};
+    met.push(metObject);
 
     stream
       .on("error", callback)
@@ -111,11 +114,14 @@ export class MetricsHandler {
       .on("data", (data: any) => {
         const [, u, k, timestamp] = data.key.split(":");
         const value = data.value;
-        if (username != u) {
-          console.log(`Level DB error: No metric found for this user`);
-        } else {
-          met.push(new Metric(timestamp, value));
+        if(username === u) {
+          if(allKeys.indexOf(k) == -1) {
+            allKeys.push(k);
+            met[0][k] = [];
+          }
+          met[0][k].push(new Metric(timestamp, value));
         }
+        
       });
   }
 }

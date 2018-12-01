@@ -10,24 +10,46 @@
     <h1>Hello
       <%= name %>
     </h1>
-    <button class="btn btn-success" id="show-metrics">
+    <button class="btn btn-success" id="show-metrics"`>
       Bring the metrics
     </button>
     <button class="btn btn-danger" href="/logout" onClick='document.location.href="/logout"'>
       Logout
     </button>
-    <div id="metrics"></div>
+    <div class="mt-3 row justify-content-start" id="metrics"></div>
   </div>
 </body>
 
 <script>
   $('#show-metrics').click((e) => {
     e.preventDefault()
-    $.getJSON('/metrics.json', {}, (data) => {
-      const content = data.map(d => {
-        return `<p>timestamp: ${d.timestamp}, value: ${d.value}</p>`
-      })
-      $("#metrics").append(content.join("\n"))
+    const current_user = "<%- name %>"
+    $.getJSON(`metrics/${current_user}`, {}, (data) => {
+      let final_content = [];
+      for(const key in data[0]) {
+        final_content.push(
+          `     <div class="col-6">
+                  <div class="card my-3">
+                    <div class="card-header">
+                      <span class="h5">Key : ${key}</span>
+                    </div>
+                    <div class="card-body">
+                      <table class="table table-sm">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col" class="text-center">Timestamp</th>
+                            <th scope="col">Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+            `
+            );
+        data[0][key].map(d => {
+          final_content.push(`<tr><td class="text-center">${d.timestamp}</td><td>${d.value}</td></tr>`);
+        })
+        final_content.push('</tbody></table></div></div></div>');
+      }
+      $("#metrics").append(final_content.join("\n"))
     })
   })
 </script>
