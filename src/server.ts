@@ -183,18 +183,17 @@ metricsRouter.get("/:username/:id", (req: any, res: any, next: any) => {
 });
 
 // Sauvegarde un groupe de metrics d'un user
-metricsRouter.post("/:username/:id", (req: any, res: any, next: any) => {
-  if (req.session.user.username === req.params.username) {
-    dbMet.saveUserMetricsWithKey(
-      req.params.username,
-      req.params.id,
-      req.body,
+metricsRouter.post("/:username", (req: any, res: any, next: any) => {
+    dbMet.saveUserOneMetricWithKey(
+      req.session.user.username,
+      req.body.key,
+      new Metric(`${new Date(req.body.timestamp).getTime()}`, req.body.value),
       (err: Error | null) => {
         if (err) next(err);
         res.status(200).send();
+        res.redirect("/");
       }
     );
-  }
 });
 
 // Supprime un groupe de metrics d'un user

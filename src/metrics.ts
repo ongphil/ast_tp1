@@ -40,6 +40,24 @@ export class MetricsHandler {
   }
 
   /*
+    Ajouter un metric à un groupe de metrics
+  */
+  public saveUserOneMetricWithKey(
+    username: string,
+    key: string,
+    met: Metric,
+    callback: (error: Error | null) => void
+  ) {
+    const stream = WriteStream(this.db);
+
+    stream.on("error", callback);
+    stream.on("close", callback);
+
+      stream.write({ key: `metric:${username}:${key}:${met.timestamp}`, value: met.value });
+
+    stream.end();
+  }
+  /*
     Supprime un groupe de metrics d'un user
   */
   public removeUserMetricsWithKey(
