@@ -71,6 +71,29 @@ authRouter.get("/signup", function(req: any, res: any) {
   res.render("signup");
 });
 
+/// Inscrit un utilisateur
+authRouter.post("/signup", function(req: any, res: any, next: any) {
+  dbUser.get(req.body.username, function(err: Error | null, result?: User) {
+    if (!err || result !== undefined) {
+      res.status(409).send("user already exists");
+    } else {
+      const user = new User(req.body.username, req.body.mail, req.body.password);
+      dbUser.save(user, function(err: Error | null) {
+        if(err){
+          next(err);
+        }
+        else {
+          req.session.loggedIn = true;
+          req.session.user = user;
+          res.redirect("/");
+        }
+      });
+    }
+  });
+});
+
+
+
 /// Déconnecte l'utilisateur courant et redirige vers la page de login
 authRouter.get("/logout", function(req: any, res: any) {
   if (req.session.loggedIn) {
