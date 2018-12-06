@@ -31,7 +31,7 @@ describe("Metrics", function() {
         });
       });
     });
-
+/*
     it("should update data", function(done) {
       // metric qui existe déjà
       const met = new Metric(`${new Date("2013-11-04 14:00 UTC").getTime()}`, 12);
@@ -45,7 +45,7 @@ describe("Metrics", function() {
           done();
         });
       });
-    });
+    });*/
   });
 
   describe("#get", function() {
@@ -59,7 +59,7 @@ describe("Metrics", function() {
       });
     });
   });
-
+  /*
   describe("#delete", function() {
     it("should delete data", function(done) {
       dbMet.removeUserMetricsWithKey('user', '0',(err: Error | null, result?: Metric[]) => {
@@ -81,5 +81,5 @@ describe("Metrics", function() {
         done();
       });
     });
-  });
+  });*/
 });
