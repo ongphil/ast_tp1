@@ -4,7 +4,7 @@ import { LevelDb } from "./leveldb";
 
 const dbPath: string = "db_test/users";
 var dbUser: UserHandler;
-
+/*
 describe("Users", function() {
   before(function() {
     LevelDb.clear(dbPath);
@@ -44,4 +44,4 @@ describe("Users", function() {
       // TODO
     });
   });
-});
+});*/

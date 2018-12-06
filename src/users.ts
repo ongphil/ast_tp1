@@ -39,7 +39,7 @@ export class User {
 
   static fromDb(username: string, value: any): User {
     const [password, email] = value.split(":");
-    return new User(username, email, password);
+    return new User(username, email, password, true);
   }
 }
 

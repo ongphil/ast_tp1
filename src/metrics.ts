@@ -53,9 +53,10 @@ export class MetricsHandler {
     stream.on("error", callback);
     stream.on("close", callback);
 
-      stream.write({ key: `metric:${username}:${key}:${met.timestamp}`, value: met.value });
+    stream.write({ key: `metric:${username}:${key}:${met.timestamp}`, value: met.value });
 
     stream.end();
+      
   }
   /*
     Supprime un groupe de metrics d'un user
