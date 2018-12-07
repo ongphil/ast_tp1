@@ -59,12 +59,51 @@ export class MetricsHandler {
       
   }
   /*
+    Updater un metric 
+  */
+ public updateUserOneMetricWithKey(
+  username: string,
+  key: string,
+  met: Metric,
+  callback: (error: Error | null) => void
+) {
+  let metricsGroupResult;
+  this.getUserMetricsWithKey(username, key, (err: Error | null, result?: Metric[]) => {
+    if (err) {
+      callback(err);
+    } else {
+      metricsGroupResult = result;
+      for(const metricIndex in metricsGroupResult) {
+        if(metricsGroupResult[metricIndex].timestamp === met.timestamp)
+        {
+          metricsGroupResult.splice(metricIndex, 1, met);
+        }
+      }
+      this.removeUserMetricsWithKey(username, key, (err: Error | null) => {
+        if (err) {
+          callback(err);
+        } else {
+          this.saveUserMetricsWithKey(username, key, metricsGroupResult, (err: Error | null) => {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null);
+            }
+          });
+        }
+      });
+    }
+
+  });
+    
+}
+  /*
     Supprime un groupe de metrics d'un user
   */
   public removeUserMetricsWithKey(
     username: string,
     key: string,
-    callback: (err: Error | null, result?: Metric[]) => void
+    callback: (err: Error | null) => void
   ) {
     const stream = this.db.createReadStream();
     var met: Metric[] = [];
@@ -72,7 +111,7 @@ export class MetricsHandler {
     stream
       .on("error", callback)
       .on("end", (err: Error) => {
-        callback(null, met);
+        callback(null);
       })
       .on("data", (data: any) => {
         const [, u, k,timestamp] = data.key.split(":");
