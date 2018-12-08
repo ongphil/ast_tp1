@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const leveldb_1 = require("./leveldb");
+const bcrypt = require('bcrypt');
 class User {
     constructor(username, email, password, passwordHashed = false) {
         this.password = "";
@@ -13,18 +14,22 @@ class User {
             this.password = password;
     }
     setPassword(toSet) {
-        // Hash and set password
-        this.password = toSet;
+        const saltRounds = 10;
+        bcrypt.hash(toSet, saltRounds).then(hash => {
+            this.password = hash;
+        });
     }
     getPassword() {
         return this.password;
     }
     validatePassword(toValidate) {
-        return this.password === toValidate;
+        return bcrypt.compare(toValidate, this.password).then(function (res) {
+            return res;
+        });
     }
     static fromDb(username, value) {
         const [password, email] = value.split(":");
-        return new User(username, email, password);
+        return new User(username, email, password, true);
     }
 }
 exports.User = User;

@@ -30,9 +30,11 @@ app.use("/", express.static(path.join(__dirname, "/../node_modules/bootstrap/dis
   Authentication
 */
 const authRouter = express.Router();
+/// Affiche la page login
 authRouter.get("/login", function (req, res) {
     res.render("login");
 });
+/// Procède à la connexion d'un utilisateur
 authRouter.post("/login", function (req, res, next) {
     dbUser.get(req.body.username, function (err, result) {
         if (err)
@@ -47,9 +49,32 @@ authRouter.post("/login", function (req, res, next) {
         }
     });
 });
+/// Affiche la page d'inscription
 authRouter.get("/signup", function (req, res) {
     res.render("signup");
 });
+/// Inscrit un utilisateur
+authRouter.post("/signup", function (req, res, next) {
+    dbUser.get(req.body.username, function (err, result) {
+        if (!err || result !== undefined) {
+            res.status(409).send("user already exists");
+        }
+        else {
+            const user = new users_1.User(req.body.username, req.body.mail, req.body.password);
+            dbUser.save(user, function (err) {
+                if (err) {
+                    next(err);
+                }
+                else {
+                    req.session.loggedIn = true;
+                    req.session.user = user;
+                    res.redirect("/");
+                }
+            });
+        }
+    });
+});
+/// Déconnecte l'utilisateur courant et redirige vers la page de login
 authRouter.get("/logout", function (req, res) {
     if (req.session.loggedIn) {
         delete req.session.loggedIn;
@@ -69,12 +94,13 @@ const authMiddleware = function (req, res, next) {
   Root
 */
 app.get("/", authMiddleware, (req, res) => {
-    res.render("index", { name: req.session.username });
+    res.render("index", { name: req.session.user.username });
 });
 /*
   Users
 */
 const userRouter = express.Router();
+/// Affiche un utilisateur
 userRouter.get("/:username", function (req, res, next) {
     dbUser.get(req.params.username, function (err, result) {
         if (err || result === undefined) {
@@ -84,6 +110,7 @@ userRouter.get("/:username", function (req, res, next) {
             res.status(200).json(result);
     });
 });
+/// Sauvegarde un utilisateur
 userRouter.post("/", function (req, res, next) {
     dbUser.get(req.body.username, function (err, result) {
         if (!err || result !== undefined) {
@@ -99,6 +126,7 @@ userRouter.post("/", function (req, res, next) {
         }
     });
 });
+/// Supprime un utilisateur
 userRouter.delete("/:username", function (req, res, next) {
     dbUser.get(req.params.username, function (err) {
         if (err)
@@ -115,31 +143,59 @@ metricsRouter.use(function (req, res, next) {
     console.log("called metrics router");
     next();
 });
-metricsRouter.get("/:id", (req, res, next) => {
-    dbMet.get(req.params.id, (err, result) => {
-        if (err)
-            next(err);
-        if (result === undefined) {
-            res.write("no result");
-            res.send();
-        }
-        else
-            res.json(result);
-    });
+/// Affiche tous les groupes de metrics d'un user
+metricsRouter.get("/:username", (req, res, next) => {
+    if (req.session.user.username === req.params.username) {
+        dbMet.getAllUserMetrics(req.params.username, (err, result) => {
+            if (err)
+                next(err);
+            if (result === undefined) {
+                res.write("no result");
+                res.send();
+            }
+            else
+                res.json(result);
+        });
+    }
+    else {
+        res
+            .status(401)
+            .send("Vous n'avez pas l'autorisation de lire les metrics d'autrui !");
+    }
 });
-metricsRouter.post("/:id", (req, res, next) => {
-    dbMet.save(req.params.id, req.body, (err) => {
+/// Affiche un groupe de metrics d'un user
+metricsRouter.get("/:username/:id", (req, res, next) => {
+    if (req.session.user.username === req.params.username) {
+        dbMet.getUserMetricsWithKey(req.params.username, req.params.id, (err, result) => {
+            if (err)
+                next(err);
+            if (result === undefined) {
+                res.write("no result");
+                res.send();
+            }
+            else
+                res.json(result);
+        });
+    }
+});
+// Sauvegarde un groupe de metrics d'un user
+metricsRouter.post("/:username", (req, res, next) => {
+    dbMet.saveUserOneMetricWithKey(req.session.user.username, req.body.key, new metrics_1.Metric(`${new Date().getTime()}`, req.body.value), (err) => {
         if (err)
             next(err);
         res.status(200).send();
+        res.redirect("/");
     });
 });
-metricsRouter.delete("/:id", (req, res, next) => {
-    dbMet.remove(req.params.id, (err) => {
-        if (err)
-            next(err);
-        res.status(200).send();
-    });
+// Supprime un groupe de metrics d'un user
+metricsRouter.delete("/:username/:id", (req, res, next) => {
+    if (req.session.user.username === req.params.username) {
+        dbMet.removeUserMetricsWithKey(req.params.username, req.params.id, (err) => {
+            if (err)
+                next(err);
+            res.status(200).send();
+        });
+    }
 });
 app.use("/metrics", authMiddleware, metricsRouter);
 /*

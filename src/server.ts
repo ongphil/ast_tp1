@@ -210,7 +210,7 @@ metricsRouter.post("/:username", (req: any, res: any, next: any) => {
     dbMet.saveUserOneMetricWithKey(
       req.session.user.username,
       req.body.key,
-      new Metric(`${new Date(req.body.timestamp).getTime()}`, req.body.value),
+      new Metric(`${new Date().getTime()}`, req.body.value),
       (err: Error | null) => {
         if (err) next(err);
         res.status(200).send();

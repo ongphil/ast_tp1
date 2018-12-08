@@ -22,9 +22,7 @@ export class User {
 
   public setPassword(toSet: string): void {
     const saltRounds = 10;
-    bcrypt.hash(toSet, saltRounds).then(hash => {
-      this.password = hash;
-    });
+    this.password = bcrypt.hash(toSet, saltRounds);
   }
 
   public getPassword(): string {
@@ -32,9 +30,7 @@ export class User {
   }
 
   public validatePassword(toValidate: String): boolean {
-    return bcrypt.compare(toValidate, this.password).then(function(res) {
-        return res;
-    });
+    return bcrypt.compare(toValidate, this.password);
   }
 
   static fromDb(username: string, value: any): User {
@@ -55,8 +51,7 @@ export class UserHandler {
     callback: (err: Error | null, result?: User) => void
   ) {
     this.db.get(`user:${username}`, function(err: Error, data: any) {
-      if (err) callback(err);
-      else if (data === undefined) callback(null, data);
+      if (err || data === undefined) callback(null, undefined);
       else callback(null, User.fromDb(username, data));
     });
   }
