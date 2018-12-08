@@ -16,7 +16,7 @@ const dbMet: MetricsHandler = new MetricsHandler("./db/metrics");
 const dbUser: UserHandler = new UserHandler("./db/users");
 
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded());
+app.use(bodyparser.urlencoded({ extended: true }));
 
 app.use(morgan("dev"));
 

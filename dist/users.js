@@ -15,17 +15,13 @@ class User {
     }
     setPassword(toSet) {
         const saltRounds = 10;
-        bcrypt.hash(toSet, saltRounds).then(hash => {
-            this.password = hash;
-        });
+        this.password = bcrypt.hash(toSet, saltRounds);
     }
     getPassword() {
         return this.password;
     }
     validatePassword(toValidate) {
-        return bcrypt.compare(toValidate, this.password).then(function (res) {
-            return res;
-        });
+        return bcrypt.compare(toValidate, this.password);
     }
     static fromDb(username, value) {
         const [password, email] = value.split(":");
@@ -39,10 +35,8 @@ class UserHandler {
     }
     get(username, callback) {
         this.db.get(`user:${username}`, function (err, data) {
-            if (err)
-                callback(err);
-            else if (data === undefined)
-                callback(null, data);
+            if (err || data === undefined)
+                callback(null, undefined);
             else
                 callback(null, User.fromDb(username, data));
         });
