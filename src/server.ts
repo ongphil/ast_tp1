@@ -184,7 +184,7 @@ metricsRouter.get("/:username", (req: any, res: any, next: any) => {
   } else {
     res
       .status(401)
-      .send("Vous n'avez pas l'autorisation de lire les metrics d'autrui !");
+      .send("No authorization to access this page");
   }
 });
 

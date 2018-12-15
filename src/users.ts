@@ -1,6 +1,8 @@
 import { LevelDb } from "./leveldb";
 const bcrypt = require('bcrypt');
 
+const saltRounds: number = 10;
+
 export class User {
   public username: string;
   public email: string;
@@ -21,7 +23,6 @@ export class User {
   }
 
   public setPassword(toSet: string): void {
-    const saltRounds = 10;
     this.password = bcrypt.hash(toSet, saltRounds);
   }
 

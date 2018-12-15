@@ -20,14 +20,18 @@
   </div>
   <div class="row mt-4">
       <div class="col">
-        <div class="row justify-content-end">
-          <div class="col-auto">
-              <button class="btn btn-primary" id="show-metrics">
-                Show metrics
+        <div class="row justify-content-between">
+          <div class="col-auto"> 
+              <button class="btn btn-primary" id="show-all-metrics" class="mr-3">
+                  Show all my metrics
               </button>
               <button class="btn btn-success" id="add-metrics" data-toggle="modal" data-target="#addMetricsModal">
-                Add a metric
-              </button>
+                  Add a metric
+                </button>
+          </div>
+          <div class="col-auto">
+            <input id="search_bar" type="number" class="form-control" placeholder="Metrics group number ..." aria-label="search_bar" aria-describedby="basic-addon1">
+             
           </div>
         </div>
         <hr/>
@@ -39,7 +43,7 @@
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add metrics</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Add a metric</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -67,16 +71,7 @@
           
       </div>
   </div>
-  
-</body>
-
-<script>
-  $('#btnSubmit').click(function() {
-    $('#addMetricsModal').modal('hide');
-  });
-
-  $('#show-metrics').click((e) => {
-    e.preventDefault()
+  <script>
     const current_user = "<%- name %>"
     $.getJSON(`metrics/${current_user}`, {}, (data) => {
       let final_content = [];
@@ -146,7 +141,182 @@
         });
       }
     })
-  })
+  </script>
+</body>
+
+<script>
+  $('#btnSubmit').click(function() {
+    $('#addMetricsModal').modal('hide');
+  });
+
+  $('#show-all-metrics').click(function() {
+    showAllMetrics();
+  });
+
+  $('#search_bar').on('input', function() {
+    const current_user = "<%- name %>";
+    const search_key = $('#search_bar').val();
+    if(search_key != '')
+    {
+        $.getJSON(`metrics/${current_user}/${search_key}`, {}, (data) => {
+          let final_content = [];
+          if(data.length > 0)
+          {
+              final_content.push(
+                `     <div class="row justify-content-start my-3">
+                        <div class="col-12">
+                          <div class="card">
+                            <div class="card-header">
+                              <div class="row justify-content-between">
+                                <div class="col-auto">
+                                  <span class="h5">${search_key} - Metrics</span>
+                                </div>
+                                <div class="col-auto">
+                                  <button type="button" class="btn btn-danger" value="${search_key}" onclick="deleteMetrics(this.value)">Delete group</button>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-6">
+                                <table class="table table-sm">
+                                  <thead class="thead-light">
+                                    <tr>
+                                      <th scope="col" class="text-center">Timestamp</th>
+                                      <th scope="col">Value</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                  `
+                  );
+              data.map(d => {
+                final_content.push(`<tr><td class="text-center">${d.timestamp}</td><td>${d.value}</td></tr>`);
+              })
+              final_content.push(`</tbody></table></div><div class="col-6"><canvas id="${search_key}" width="400" height="300"></canvas></div></div></div></div></div></div>`);
+              $("#metrics").empty()
+              $("#metrics").append(final_content.join("\n"))
+
+              let labelsArray = [];
+              let dataArray = [];
+              for(const key in data) {
+                labelsArray.push(data[key].timestamp);
+                dataArray.push(data[key].value);
+              }
+              var ctx = document.getElementById(`${search_key}`).getContext('2d');
+              var myChart = new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                      labels: labelsArray,
+                      datasets: [{
+                          label: 'metrics',
+                          data: dataArray,
+                          borderWidth: 1
+                      }]
+                  },
+                  options: {
+                      scales: {
+                          yAxes: [{
+                              ticks: {
+                                  beginAtZero:true
+                              }
+                          }]
+                      }
+                  }
+              });
+          }
+          else {
+            final_content.push(
+              ` <div class="row justify-content-start my-3">
+                  <div class="col-12">
+                    This metrics group doesn't exist
+                  </div>
+                </div>
+              `
+            );
+            $("#metrics").empty()
+            $("#metrics").append(final_content.join("\n"))
+          }
+            
+      })
+    }
+    else
+    {
+      showAllMetrics();
+    }
+    
+  });
+
+  function showAllMetrics() {
+    const current_user = "<%- name %>"
+    $.getJSON(`metrics/${current_user}`, {}, (data) => {
+      let final_content = [];
+      for(const key in data[0]) {
+        final_content.push(
+          `     <div class="row justify-content-start my-3">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <div class="row justify-content-between">
+                          <div class="col-auto">
+                            <span class="h5">${key} - Metrics</span>
+                          </div>
+                          <div class="col-auto">
+                            <button type="button" class="btn btn-danger" value="${key}" onclick="deleteMetrics(this.value)">Delete group</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-6">
+                          <table class="table table-sm">
+                            <thead class="thead-light">
+                              <tr>
+                                <th scope="col" class="text-center">Timestamp</th>
+                                <th scope="col">Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+            `
+            );
+        data[0][key].map(d => {
+          final_content.push(`<tr><td class="text-center">${d.timestamp}</td><td>${d.value}</td></tr>`);
+        })
+        final_content.push(`</tbody></table></div><div class="col-6"><canvas id="${key}" width="400" height="300"></canvas></div></div></div></div></div></div>`);
+      }
+      $("#metrics").empty()
+      $("#metrics").append(final_content.join("\n"))
+
+      for(const key in data[0]) {
+        let labelsArray = [];
+        let dataArray = [];
+        for(const metricKey in data[0][key]) {
+          labelsArray.push(data[0][key][metricKey].timestamp);
+          dataArray.push(data[0][key][metricKey].value);
+        }
+        var ctx = document.getElementById(`${key}`).getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labelsArray,
+                datasets: [{
+                    label: 'metrics',
+                    data: dataArray,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+      }
+    })
+  }
 
   function deleteMetrics(metricKey) {
     const r = confirm("Are you sure ?");
@@ -156,17 +326,11 @@
         url: `/metrics/${current_user}/${metricKey}`,
         type: 'DELETE',
         success: function(result) {
-          $("#metrics").empty()
-          $("#metrics").append(final_content.join("\n"))
+          showAllMetrics();
         }
       });
     }
-    
   }
 </script>
-
-<script>
-  
-  </script>
 
 </html>
