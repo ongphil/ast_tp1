@@ -74,7 +74,7 @@ authRouter.get("/signup", function(req: any, res: any) {
 /// Inscrit un utilisateur
 authRouter.post("/signup", function(req: any, res: any, next: any) {
   dbUser.get(req.body.username, function(err: Error | null, result?: User) {
-    if (!err || result !== undefined) {
+    if (result !== undefined) {
       res.status(409).send("user already exists");
     } else {
       const user = new User(req.body.username, req.body.mail, req.body.password);

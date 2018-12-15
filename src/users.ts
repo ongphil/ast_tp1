@@ -23,7 +23,7 @@ export class User {
   }
 
   public setPassword(toSet: string): void {
-    this.password = bcrypt.hash(toSet, saltRounds);
+    this.password = bcrypt.hashSync(toSet, saltRounds);
   }
 
   public getPassword(): string {
@@ -31,7 +31,7 @@ export class User {
   }
 
   public validatePassword(toValidate: String): boolean {
-    return bcrypt.compare(toValidate, this.password);
+    return bcrypt.compareSync(toValidate, this.password);
   }
 
   static fromDb(username: string, value: any): User {
