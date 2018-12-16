@@ -14,7 +14,7 @@ const port = process.env.PORT || "8080";
 const dbMet = new metrics_1.MetricsHandler("./db/metrics");
 const dbUser = new users_1.UserHandler("./db/users");
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded());
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(session({
     secret: "this is a very secret secret phrase",
@@ -56,7 +56,7 @@ authRouter.get("/signup", function (req, res) {
 /// Inscrit un utilisateur
 authRouter.post("/signup", function (req, res, next) {
     dbUser.get(req.body.username, function (err, result) {
-        if (!err || result !== undefined) {
+        if (result !== undefined) {
             res.status(409).send("user already exists");
         }
         else {
@@ -160,7 +160,7 @@ metricsRouter.get("/:username", (req, res, next) => {
     else {
         res
             .status(401)
-            .send("Vous n'avez pas l'autorisation de lire les metrics d'autrui !");
+            .send("No authorization to access this page");
     }
 });
 /// Affiche un groupe de metrics d'un user
@@ -178,7 +178,7 @@ metricsRouter.get("/:username/:id", (req, res, next) => {
         });
     }
 });
-// Sauvegarde un groupe de metrics d'un user
+// Sauvegarde un metric pour un utilisateur
 metricsRouter.post("/:username", (req, res, next) => {
     dbMet.saveUserOneMetricWithKey(req.session.user.username, req.body.key, new metrics_1.Metric(`${new Date().getTime()}`, req.body.value), (err) => {
         if (err)

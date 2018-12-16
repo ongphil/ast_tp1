@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const leveldb_1 = require("./leveldb");
 const bcrypt = require('bcrypt');
+const saltRounds = 10;
 class User {
     constructor(username, email, password, passwordHashed = false) {
         this.password = "";
@@ -14,14 +15,13 @@ class User {
             this.password = password;
     }
     setPassword(toSet) {
-        const saltRounds = 10;
-        this.password = bcrypt.hash(toSet, saltRounds);
+        this.password = bcrypt.hashSync(toSet, saltRounds);
     }
     getPassword() {
         return this.password;
     }
     validatePassword(toValidate) {
-        return bcrypt.compare(toValidate, this.password);
+        return bcrypt.compareSync(toValidate, this.password);
     }
     static fromDb(username, value) {
         const [password, email] = value.split(":");

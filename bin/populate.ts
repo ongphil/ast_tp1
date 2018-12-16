@@ -24,7 +24,9 @@ const user = new User("user", "user@test.com", "user");
 
 dbUser.save(user, (err: Error | null) => {
   if (err) throw err;
-  console.log("Data user populated");
+  console.log("Data user populated, you can connect with :");
+  console.log("username: user");
+  console.log("password : user")
 });
 
 dbMet.saveUserMetricsWithKey("user", "0", met, (err: Error | null) => {
@@ -55,7 +57,9 @@ const user2 = new User("user2", "user2@test.com", "user2");
 
 dbUser.save(user2, (err: Error | null) => {
   if (err) throw err;
-  console.log("Data user populated");
+  console.log("Data user2 populated, you can connect with :");
+  console.log("username: user2");
+  console.log("password : user2")
 });
 
 dbMet.saveUserMetricsWithKey("user2", "0", met3, (err: Error | null) => {
