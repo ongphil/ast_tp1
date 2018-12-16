@@ -48,20 +48,22 @@ Pour lancer les tests unitaires, exécutez la commande suivante :
 npm run test
 ```
 
-### Routes
+## Routes
 
-#### NAVIGATION WEB
+### NAVIGATION WEB
 
 ##### GET :
 - `/` : redirige vers la page login si aucun utilisateur n'est connecté, redirige vers la page index si c'est le cas
 - `/login` : page de login
 - `/signup` : page d'inscription
 - `/logout` : déconnecte l'utilisateur actuel
+
 ##### POST :
 - `/login` : connexion d'un utilisateur et redirection vers la page index en cas de succès. Redirige vers la page de login si les informations entrées sont incorrectes
 - `/signup` : sauvegarde les informations dun utilisateur après inscription
 
-#### API REST
+### API REST
+
 ##### GET :
 - `/user/{username}` : récupère les informations d'un utilisateur
 - `/metrics/{username}` : récupère tous les metrics d'un utilisateur
