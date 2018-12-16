@@ -6,27 +6,42 @@
 </head>
 
 <body class="container">
-  <div class="col-md-6.col-md-offset-3">
-    <div id="form">
-      <p>Please login to your account</p>
-      <hr/>
-      <form action="/login" method="post">
-        <div class="form-group">
-          <label for="form_username">Username</label>
-          <input id="form_username" type="text" name="username" />
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <div id="form" class="card">
+          <div class="card-header">
+            <h5>Please login to your account</h5>
+          </div>
+            <div class="card-body">
+              <form action="/login" method="post">
+                <div class="form-group">
+                    <label for="form_username">Username</label><br/>
+                    <input id="form_username" type="text" name="username" required/>
+                </div>
+                <div class="form-group">
+                  <label for="form_password">Password</label><br/>
+                  <input id="form_password" type="password" name="password" required />
+                </div>
+                <div class="row justify-content-center">
+                  <div class="col-12">
+                      <button class="btn btn-primary btn-block" type="submit" value="Submit">Sign in</button>
+                  </div>
+                </div>  
+              </form>
+              <hr/>
+              <div class="row justify-content-center align-items-center">
+                <div class="col-auto">
+                    You don't have an account ?
+                </div>
+                <div class="col-auto">
+                  <button class="btn btn-outline-primary btn-block" type="button" href="/signup" onClick='document.location.href="/signup"'>Sign up</button>
+                </div>
+              </div>
+            </div>
+          
         </div>
-        <div class="form-group">
-          <label for="form_password">Password</label>
-          <input id="form_password" type="password" name="password" />
-        </div>
-        <button class="btn btn-primary btn-block" type="submit" value="Submit">Connect</button>
-      </form>
-      <hr/>
-      <button class="btn btn-success btn-block" href="/signup" onClick='document.location.href="/signup"'>
-        Create an account
-      </button>
+      </div>
     </div>
-  </div>
-</body>
+  </body>
 
 </html>

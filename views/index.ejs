@@ -9,7 +9,7 @@
 <body class="container">
   <div class="row">
     <div class="col">
-        <h1>Hello
+        <h1>Welcome
             <%= name %>
             <button class="btn btn-outline-danger ml-3" href="/logout" onClick='document.location.href="/logout"'>
               Logout
@@ -20,21 +20,18 @@
   </div>
   <div class="row mt-4">
       <div class="col">
-        <div class="row justify-content-between">
-          <div class="col-auto"> 
-              <button class="btn btn-primary" id="show-all-metrics" class="mr-3">
-                  Show all my metrics
-              </button>
-              <button class="btn btn-success" id="add-metrics" data-toggle="modal" data-target="#addMetricsModal">
-                  Add a metric
-                </button>
+        
+        <hr/>
+        <div class="row justify-content-between align-items-center">
+          <div class="col-3">
+              <input id="search_bar" type="number" class="form-control" placeholder="Enter a metrics group number" aria-label="search_bar" aria-describedby="basic-addon1" />
           </div>
-          <div class="col-auto">
-            <input id="search_bar" type="number" class="form-control" placeholder="Metrics group number ..." aria-label="search_bar" aria-describedby="basic-addon1">
-             
+          <div class="col-auto"> 
+              <button class="btn btn-primary" id="add-metrics" data-toggle="modal" data-target="#addMetricsModal">
+                  Add a metric
+              </button>
           </div>
         </div>
-        <hr/>
         <div class="row">
           <div class="col">
               <div class="mt-3" id="metrics"></div>
@@ -81,12 +78,12 @@
                   <div class="col-12">
                     <div class="card">
                       <div class="card-header">
-                        <div class="row justify-content-between">
+                        <div class="row justify-content-between align-items-center">
                           <div class="col-auto">
                             <span class="h5">${key} - Metrics</span>
                           </div>
                           <div class="col-auto">
-                            <button type="button" class="btn btn-danger" value="${key}" onclick="deleteMetrics(this.value)">Delete group</button>
+                            <button type="button" class="btn btn-danger btn-sm" value="${key}" onclick="deleteMetrics(this.value)">Delete group</button>
                           </div>
                         </div>
                       </div>
@@ -149,10 +146,6 @@
     $('#addMetricsModal').modal('hide');
   });
 
-  $('#show-all-metrics').click(function() {
-    showAllMetrics();
-  });
-
   $('#search_bar').on('input', function() {
     const current_user = "<%- name %>";
     const search_key = $('#search_bar').val();
@@ -167,12 +160,12 @@
                         <div class="col-12">
                           <div class="card">
                             <div class="card-header">
-                              <div class="row justify-content-between">
+                              <div class="row justify-content-between align-items-center">
                                 <div class="col-auto">
                                   <span class="h5">${search_key} - Metrics</span>
                                 </div>
                                 <div class="col-auto">
-                                  <button type="button" class="btn btn-danger" value="${search_key}" onclick="deleteMetrics(this.value)">Delete group</button>
+                                  <button type="button" class="btn btn-danger btn-sm" value="${search_key}" onclick="deleteMetrics(this.value)">Delete group</button>
                                 </div>
                               </div>
                             </div>
@@ -256,12 +249,12 @@
                   <div class="col-12">
                     <div class="card">
                       <div class="card-header">
-                        <div class="row justify-content-between">
+                        <div class="row justify-content-between align-items-center">
                           <div class="col-auto">
                             <span class="h5">${key} - Metrics</span>
                           </div>
                           <div class="col-auto">
-                            <button type="button" class="btn btn-danger" value="${key}" onclick="deleteMetrics(this.value)">Delete group</button>
+                            <button type="button" class="btn btn-danger btn-sm" value="${key}" onclick="deleteMetrics(this.value)">Delete group</button>
                           </div>
                         </div>
                       </div>
