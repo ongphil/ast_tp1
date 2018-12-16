@@ -205,7 +205,7 @@ metricsRouter.get("/:username/:id", (req: any, res: any, next: any) => {
   }
 });
 
-// Sauvegarde un groupe de metrics d'un user
+// Sauvegarde un metric pour un utilisateur
 metricsRouter.post("/:username", (req: any, res: any, next: any) => {
     dbMet.saveUserOneMetricWithKey(
       req.session.user.username,
